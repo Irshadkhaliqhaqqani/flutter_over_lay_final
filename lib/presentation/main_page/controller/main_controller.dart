@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:window_manager/window_manager.dart';
-import '../../core/usecases/usecase.dart';
-import '../../domain/usecases/open_overlay_window_usecase.dart';
+import '../../../core/usecases/usecase.dart';
+import '../../../domain/usecases/open_overlay_window_usecase.dart';
 
 class MainController extends GetxController {
   var isMaximixed = false.obs;

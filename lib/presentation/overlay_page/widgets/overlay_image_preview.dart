@@ -1,22 +1,22 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/overlay_controller.dart';
+import '../controller/overlay_controller.dart';
 
 class OverlayImagePreview extends StatelessWidget {
   OverlayImagePreview({Key? key}) : super(key: key);
-  
+
   final OverlayController controller = Get.find<OverlayController>();
-  
+
   @override
   Widget build(BuildContext context) {
     return Obx(() {
       final image = controller.figmaImage.value;
-      
+
       if (image == null) {
         return const SizedBox.shrink();
       }
-      
+
       return ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Stack(
@@ -68,7 +68,8 @@ class OverlayImagePreview extends StatelessWidget {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white, size: 20),
+                      icon: const Icon(Icons.close,
+                          color: Colors.white, size: 20),
                       onPressed: controller.resetOverlay,
                     ),
                   ],
@@ -80,7 +81,7 @@ class OverlayImagePreview extends StatelessWidget {
       );
     });
   }
-  
+
   String _formatTime(DateTime time) {
     return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
   }

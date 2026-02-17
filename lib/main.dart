@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:window_manager/window_manager.dart';
 import 'core/constants/app_constants.dart';
-import 'presentation/pages/main_control_panel_page.dart';
-import 'presentation/pages/overlay_page.dart';
+import 'presentation/main_page/screen/main_control_panel_page.dart';
+import 'presentation/overlay_page/screen/overlay_page.dart';
 import 'core/utils/dependency_injection.dart';
 
 void main(List<String> args) async {
@@ -60,7 +61,7 @@ void main(List<String> args) async {
 // MAIN APP - Glassmorphism Container
 // ============================================
 class MainApp extends StatelessWidget {
-  const MainApp({Key? key}) : super(key: key);
+  const MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -75,10 +76,11 @@ class MainApp extends StatelessWidget {
       title: AppConstants.appTitle,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        useMaterial3: true,
-        brightness:
-            Brightness.dark, // Reference image uses dark-mode aesthetics
-      ),
+          useMaterial3: true,
+          brightness: Brightness.dark,
+          textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context)
+              .textTheme
+              .apply(bodyColor: Colors.white, displayColor: Colors.grey))),
       home: MainControlPanelPage(),
     );
   }
@@ -87,6 +89,7 @@ class MainApp extends StatelessWidget {
 // ============================================
 // OVERLAY APP
 // ============================================
+
 class OverlayApp extends StatelessWidget {
   const OverlayApp({super.key});
 

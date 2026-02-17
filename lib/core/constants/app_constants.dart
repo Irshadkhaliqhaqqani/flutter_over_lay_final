@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AppConstants {
   // App Info
   static const String appTitle = 'Overlay.io';
-  static const String appName = 'Figma Design Overlay Tool';
+  static const String appName = 'Flutter Overlay';
   static const String appSubtitle =
       'is a lightweight, always-on-top desktop overlay that puts your assets, design tokens, and checklists directly onto your Figma canvas. Built for speed and precision, it streamlines your workflow by keeping your essential tools visible—even while you design.';
 

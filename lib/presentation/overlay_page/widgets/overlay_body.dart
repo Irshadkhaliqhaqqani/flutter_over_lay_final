@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:window_manager/window_manager.dart';
-import '../controllers/overlay_controller.dart';
+import '../controller/overlay_controller.dart';
 import 'overlay_control_bar.dart';
 import 'overlay_drop_zone.dart';
 import 'overlay_image_preview.dart';

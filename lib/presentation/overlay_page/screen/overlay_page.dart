@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/overlay_controller.dart';
+import '../controller/overlay_controller.dart';
 import '../widgets/overlay_body.dart';
 
 class OverlayPage extends StatefulWidget {

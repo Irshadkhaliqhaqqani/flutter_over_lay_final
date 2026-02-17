@@ -1,4 +1,4 @@
-import 'package:figma_overlay_clean/presentation/controllers/main_controller.dart';
+import 'package:figma_overlay_clean/presentation/main_page/controller/main_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/state_manager.dart';
 import 'package:window_manager/window_manager.dart';

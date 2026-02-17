@@ -1,6 +1,6 @@
 import 'package:figma_overlay_clean/core/constants/glass_card.dart';
-import 'package:figma_overlay_clean/presentation/controllers/main_controller.dart';
-import 'package:figma_overlay_clean/presentation/controllers/side_menu_bar_controller.dart';
+import 'package:figma_overlay_clean/presentation/main_page/controller/main_controller.dart';
+import 'package:figma_overlay_clean/presentation/home_page/controller/side_menu_bar_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -75,7 +75,7 @@ class MainPageHeroSection extends GetView<MainController> {
               ),
               Expanded(
                   child: Obx(() => Container(
-                        padding: const EdgeInsets.all(20),
+                        padding: const EdgeInsets.only(left: 10),
                         child: menuBarController.currentPage,
                       )))
             ],

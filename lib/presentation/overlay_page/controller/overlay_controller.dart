@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../core/constants/app_constants.dart';
-import '../../core/usecases/usecase.dart';
-import '../../domain/entities/figma_image.dart';
-import '../../domain/usecases/pick_image_usecase.dart';
+import '../../../core/constants/app_constants.dart';
+import '../../../core/usecases/usecase.dart';
+import '../../../domain/entities/figma_image.dart';
+import '../../../domain/usecases/pick_image_usecase.dart';
 
 class OverlayController extends GetxController {
   final PickImageUseCase pickImageUseCase;

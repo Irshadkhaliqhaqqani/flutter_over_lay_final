@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:window_manager/window_manager.dart';
-import '../controllers/overlay_controller.dart';
+import '../controller/overlay_controller.dart';
 
 class OverlayControlBar extends StatelessWidget {
   OverlayControlBar({Key? key}) : super(key: key);

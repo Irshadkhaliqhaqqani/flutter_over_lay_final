@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:desktop_drop/desktop_drop.dart';
-import '../../core/constants/app_constants.dart';
-import '../controllers/overlay_controller.dart';
+import '../../../core/constants/app_constants.dart';
+import '../controller/overlay_controller.dart';
 
 class OverlayDropZone extends StatefulWidget {
   OverlayDropZone({Key? key}) : super(key: key);
