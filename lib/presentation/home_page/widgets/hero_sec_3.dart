@@ -1,8 +1,6 @@
 import 'package:figma_overlay_clean/core/constants/app_colors.dart';
 import 'package:figma_overlay_clean/core/constants/button_1.dart';
-import 'package:figma_overlay_clean/core/constants/button_2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HeroSec3 extends StatelessWidget {

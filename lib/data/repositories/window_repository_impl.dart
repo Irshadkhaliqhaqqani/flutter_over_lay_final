@@ -1,9 +1,7 @@
 import 'dart:io';
 import 'package:dartz/dartz.dart';
-import 'package:flutter/material.dart';
 import '../../core/errors/failures.dart';
 import '../../domain/repositories/window_repository.dart';
-import '../../core/constants/app_constants.dart';
 
 class WindowRepositoryImpl implements WindowRepository {
   @override

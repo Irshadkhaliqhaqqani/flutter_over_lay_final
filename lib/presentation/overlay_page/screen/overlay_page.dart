@@ -4,7 +4,7 @@ import '../controller/overlay_controller.dart';
 import '../widgets/overlay_body.dart';
 
 class OverlayPage extends StatefulWidget {
-  OverlayPage({Key? key}) : super(key: key);
+  const OverlayPage({super.key});
 
   @override
   State<OverlayPage> createState() => _OverlayPageState();

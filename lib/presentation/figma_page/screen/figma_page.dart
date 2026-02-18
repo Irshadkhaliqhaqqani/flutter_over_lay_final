@@ -1,6 +1,11 @@
 import 'package:figma_overlay_clean/core/constants/glass_card.dart';
+import 'package:figma_overlay_clean/presentation/figma_page/controller/figma_page_controller.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class FigmaPage extends StatelessWidget {
@@ -8,6 +13,7 @@ class FigmaPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final FigmaPageController controller = Get.put(FigmaPageController());
     return Column(
       children: [
         Row(
@@ -60,6 +66,7 @@ class FigmaPage extends StatelessWidget {
               Expanded(
                   child: GlassCard(
                       opacity: 0.1,
+                      height: 500,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -75,7 +82,101 @@ class FigmaPage extends StatelessWidget {
                           const SizedBox(
                             height: 10,
                           ),
-                          buildOverlaySlider(0.4, context)
+                          buildOverlaySlider(0.4, context),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text("Zoom Opacity",
+                                  style: TextStyle(fontSize: 14)),
+                              Transform.scale(
+                                scale: 0.8,
+                                child: Obx(
+                                  () => CupertinoSwitch(
+                                      activeColor: Colors.grey,
+                                      value: controller.isToggled.value,
+                                      onChanged: (value) =>
+                                          controller.toggleSwitch(value)),
+                                ),
+                              )
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    height: 28,
+                                    width: 28,
+                                    'assets/svgs/lock-solid-full.svg',
+                                    fit: BoxFit.contain,
+                                    colorFilter: const ColorFilter.mode(
+                                        Colors.white, BlendMode.srcIn),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  const Text("Lock Position",
+                                      style: TextStyle(fontSize: 14)),
+                                ],
+                              ),
+                              SvgPicture.asset(
+                                height: 28,
+                                width: 28,
+                                'assets/svgs/circle-check-regular-full.svg',
+                                colorFilter: const ColorFilter.mode(
+                                    Colors.white, BlendMode.srcIn),
+                              )
+                            ],
+                          ),
+
+                          // Screen section
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("Top-Left"),
+                              Text("Center"),
+                              Text("Fill Screen"),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SvgPicture.asset(
+                                height: 50,
+                                width: 50,
+                                'assets/svgs/align-box-top-left-stroke-rounded.svg',
+                                colorFilter: const ColorFilter.mode(
+                                    Colors.white, BlendMode.srcIn),
+                              ),
+                              SvgPicture.asset(
+                                height: 50,
+                                width: 50,
+                                'assets/svgs/align-box-middle-center-stroke-rounded.svg',
+                                colorFilter: const ColorFilter.mode(
+                                    Colors.white, BlendMode.srcIn),
+                              ),
+                              SvgPicture.asset(
+                                height: 50,
+                                width: 50,
+                                'assets/svgs/align-box-bottom-center-stroke-rounded.svg',
+                                colorFilter: const ColorFilter.mode(
+                                    Colors.white, BlendMode.srcIn),
+                              ),
+                            ],
+                          )
                         ],
                       ))),
             ],

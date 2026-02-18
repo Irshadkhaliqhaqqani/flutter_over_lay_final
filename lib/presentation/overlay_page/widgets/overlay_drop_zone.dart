@@ -5,7 +5,7 @@ import '../../../core/constants/app_constants.dart';
 import '../controller/overlay_controller.dart';
 
 class OverlayDropZone extends StatefulWidget {
-  OverlayDropZone({Key? key}) : super(key: key);
+  const OverlayDropZone({super.key});
 
   @override
   State<OverlayDropZone> createState() => _OverlayDropZoneState();

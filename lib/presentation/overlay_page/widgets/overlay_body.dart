@@ -7,7 +7,7 @@ import 'overlay_drop_zone.dart';
 import 'overlay_image_preview.dart';
 
 class OverlayBody extends StatelessWidget {
-  OverlayBody({Key? key}) : super(key: key);
+  OverlayBody({super.key});
 
   final OverlayController controller = Get.find<OverlayController>();
 
@@ -40,7 +40,7 @@ class OverlayBody extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: controller.figmaImage.value == null
-                        ? OverlayDropZone()
+                        ? const OverlayDropZone()
                         : OverlayImagePreview(),
                   ),
                 ),

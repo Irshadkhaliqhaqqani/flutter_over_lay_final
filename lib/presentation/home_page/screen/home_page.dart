@@ -18,10 +18,10 @@ class HomePage extends StatelessWidget {
         const Expanded(
           child: Row(
             children: [
-              Expanded(flex: 3, child: HeroSec1()),
+              Expanded(flex: 4, child: HeroSec1()),
               SizedBox(width: 10),
               Expanded(
-                flex: 2,
+                flex: 3,
                 child: GlassCard(opacity: 0.1, child: HeroSec2()),
               ),
             ],
@@ -48,13 +48,11 @@ class HomePage extends StatelessWidget {
         const SizedBox(height: 10),
 
         // Updated Review Row
-        Padding(
-          padding: const EdgeInsets.only(left: 10, bottom: 10),
+        SizedBox(
+          height: 50,
           child: Row(
             children: [
-              // Fixed width for the Stack to prevent infinite width errors
               SizedBox(
-                height: 50,
                 width: 120,
                 child: Stack(
                   children: [
@@ -65,14 +63,8 @@ class HomePage extends StatelessWidget {
                   ],
                 ),
               ),
-
-              // Added a label for context using your Poppins/Inter
-              // style
-              SizedBox(
-                height: 35,
-                child: VerticalDivider(
-                  color: Colors.white.withOpacity(0.3),
-                ),
+              VerticalDivider(
+                color: Colors.white.withOpacity(0.3),
               ),
               Text(
                 "Trusted by 50+ Teams",
@@ -89,7 +81,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // Optimized Helper Widget for review circles
+  // Widget for review circles
   Widget _buildReviewContainer() {
     return Container(
       height: 40,
