@@ -1,3 +1,4 @@
+import 'package:figma_overlay_clean/core/constants/app_colors.dart';
 import 'package:figma_overlay_clean/core/constants/app_constants.dart';
 import 'package:figma_overlay_clean/core/constants/button_1.dart';
 import 'package:figma_overlay_clean/core/constants/button_2.dart';
@@ -35,7 +36,11 @@ class HeroSec1 extends StatelessWidget {
               SizedBox(
                 width: 10,
               ),
-              Button2(buttonText: 'Get Started')
+              Button2(
+                buttonText: 'Get Started',
+                buttonColor: AppColors.primaryColor,
+                buttonHieght: 38,
+              )
             ],
           )
         ],

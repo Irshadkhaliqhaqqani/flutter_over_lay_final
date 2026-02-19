@@ -1,3 +1,4 @@
+import 'package:figma_overlay_clean/core/constants/app_colors.dart';
 import 'package:figma_overlay_clean/core/constants/button_2.dart';
 import 'package:flutter/material.dart';
 
@@ -51,7 +52,11 @@ class HeroSec2 extends StatelessWidget {
               ),
               const Text("Figma API Connected"),
               const Spacer(),
-              const Button2(buttonText: 'Fetch Desgin'),
+              const Button2(
+                buttonText: 'Fetch Desgin',
+                buttonColor: AppColors.primaryColor,
+                buttonHieght: 38,
+              ),
             ],
           ),
           const SizedBox(

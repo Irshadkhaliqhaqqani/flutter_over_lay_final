@@ -1,5 +1,6 @@
 import 'package:figma_overlay_clean/core/constants/app_colors.dart';
 import 'package:figma_overlay_clean/core/constants/glass_card.dart';
+import 'package:figma_overlay_clean/core/constants/review_section.dart';
 import 'package:figma_overlay_clean/presentation/home_page/widgets/hero_sec_1.dart';
 import 'package:figma_overlay_clean/presentation/home_page/widgets/hero_sec_2.dart';
 import 'package:figma_overlay_clean/presentation/home_page/widgets/hero_sec_3.dart';
@@ -12,10 +13,10 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       children: [
         // First Section
-        const Expanded(
+        Expanded(
           child: Row(
             children: [
               Expanded(flex: 4, child: HeroSec1()),
@@ -27,10 +28,10 @@ class HomePage extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
 
         // Second Section
-        const Expanded(
+        Expanded(
           child: Row(
             children: [
               Expanded(
@@ -45,66 +46,12 @@ class HomePage extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
 
         // Updated Review Row
-        SizedBox(
-          height: 50,
-          child: Row(
-            children: [
-              SizedBox(
-                width: 120,
-                child: Stack(
-                  children: [
-                    Positioned(left: 0, child: _buildReviewContainer()),
-                    Positioned(left: 25, child: _buildReviewContainer()),
-                    Positioned(left: 50, child: _buildReviewContainer()),
-                    Positioned(left: 75, child: _buildReviewContainer()),
-                  ],
-                ),
-              ),
-              VerticalDivider(
-                color: Colors.white.withOpacity(0.3),
-              ),
-              Text(
-                "Trusted by 50+ Teams",
-                style: GoogleFonts.inter(
-                  color: Colors.white70,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
 
-  // Widget for review circles
-  Widget _buildReviewContainer() {
-    return Container(
-      height: 40,
-      width: 40,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.white,
-        border: Border.all(
-          // Ensure ternitaryColor is defined in your AppColors
-          color: AppColors.ternitaryColor.withOpacity(0.3),
-          width: 2,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: const Center(
-        child: Icon(Icons.person, size: 20, color: Colors.grey),
-      ),
+        ReviewSection()
+      ],
     );
   }
 }
