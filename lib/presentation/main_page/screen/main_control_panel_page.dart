@@ -20,7 +20,7 @@ class MainControlPanelPage extends StatelessWidget {
         child: Stack(children: [
           Positioned.fill(
             child: Image.asset(
-              'assets/hero_image2.jfif',
+              'assets/hero_image2.jpg',
               width: double.infinity,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
