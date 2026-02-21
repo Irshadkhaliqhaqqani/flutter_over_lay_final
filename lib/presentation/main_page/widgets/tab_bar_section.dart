@@ -1,4 +1,5 @@
 import 'package:figma_overlay_clean/core/constants/glass_card.dart';
+import 'package:figma_overlay_clean/presentation/authentication/controller/auth_controller.dart';
 import 'package:figma_overlay_clean/presentation/home_page/controller/side_menu_bar_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -12,6 +13,7 @@ class TabBarSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final SideMenuBarController menuBarController =
         Get.put(SideMenuBarController());
+    final controller = Get.find<AuthController>();
     return SizedBox(
       height: double.infinity,
       child: GlassCard(
@@ -56,6 +58,12 @@ class TabBarSection extends StatelessWidget {
             ),
             _buildSideItem(menuBarController, 4,
                 "assets/svgs/list-solid-full.svg", 'Guide'),
+            const Spacer(),
+            GestureDetector(
+                onTap: () => controller.logout(), child: Icon(Icons.power_off)),
+            const SizedBox(
+              height: 20,
+            ),
           ],
         ),
       ),

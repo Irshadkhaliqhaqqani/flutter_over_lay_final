@@ -1,6 +1,9 @@
+import 'package:figma_overlay_clean/data/repositories/auth_repo_impl.dart';
 import 'package:figma_overlay_clean/data/repositories/figma_repo_impl.dart';
+import 'package:figma_overlay_clean/domain/repositories/auth_repo.dart';
 import 'package:figma_overlay_clean/domain/repositories/figma_repository.dart';
 import 'package:figma_overlay_clean/domain/usecases/pick_image_usecase.dart';
+import 'package:figma_overlay_clean/presentation/authentication/controller/auth_controller.dart';
 import 'package:figma_overlay_clean/presentation/figma_page/controller/figma_controller.dart';
 import 'package:figma_overlay_clean/presentation/figma_page/controller/figma_page_controller.dart';
 import 'package:figma_overlay_clean/presentation/home_page/controller/side_menu_bar_controller.dart';
@@ -14,11 +17,13 @@ class InitialBinding extends Bindings {
   void dependencies() {
     // 1. Repositories and UseCases (Dependencies for Controllers)
     Get.lazyPut<FigmaRepository>(() => FigmaRepositoryImpl(), fenix: true);
+    Get.lazyPut<AuthRepo>(() => AuthRepoImpl());
     // Note: Ensure your PickImageUseCase implementation is available
     Get.lazyPut(() => PickImageUseCase(Get.find()), fenix: true);
 
     // 2. Persistent Controllers (Stay in memory for the whole session)
     Get.put(SideMenuBarController(), permanent: true);
+    Get.put(AuthController(Get.find<AuthRepo>()), permanent: true);
 
     // 3. Feature Controllers (Loaded when needed)
     // fenix: true allows them to be recreated if the user navigates back to the page

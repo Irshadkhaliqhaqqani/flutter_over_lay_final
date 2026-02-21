@@ -1,17 +1,25 @@
 import 'package:figma_overlay_clean/core/binding/initial_binding.dart';
+import 'package:figma_overlay_clean/presentation/authentication/login/screen/login_page.dart';
 import 'package:figma_overlay_clean/presentation/authentication/sign_in/screen/sign_in_page.dart';
+import 'package:figma_overlay_clean/presentation/home_page/screen/home_page.dart';
+import 'package:figma_overlay_clean/presentation/main_page/screen/main_control_panel_page.dart';
+import 'package:figma_overlay_clean/presentation/splash_screen/screen/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 import 'core/constants/app_constants.dart';
-import 'presentation/main_page/screen/main_control_panel_page.dart';
 import 'presentation/overlay_page/screen/overlay_page.dart';
 import 'core/utils/dependency_injection.dart';
 
 void main(List<String> args) async {
   // Ensure the Flutter framework is ready before native calls
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+      url: 'https://mieeoyivlkvjcxjiswly.supabase.co',
+      anonKey: 'sb_publishable_siSxEBtxgD8Y8i1Go1_aXg_JvS9gLD2');
 
   // 1. Initialize Window Manager
   await windowManager.ensureInitialized();
@@ -29,7 +37,7 @@ void main(List<String> args) async {
       backgroundColor: Colors.transparent,
       skipTaskbar: false,
       titleBarStyle: TitleBarStyle.hidden,
-      alwaysOnTop: true, // Crucial for a figma-style overlay
+      alwaysOnTop: true,
     );
 
     await windowManager.waitUntilReadyToShow(windowOptions, () async {
@@ -50,7 +58,7 @@ void main(List<String> args) async {
     );
 
     await windowManager.waitUntilReadyToShow(windowOptions, () async {
-      await windowManager.setAsFrameless(); // Removes the standard Win32 frame
+      await windowManager.setAsFrameless();
       await windowManager.show();
       await windowManager.setBackgroundColor(Colors.transparent);
     });
@@ -77,14 +85,21 @@ class MainApp extends StatelessWidget {
       },
       title: AppConstants.appTitle,
       debugShowCheckedModeBanner: false,
-      initialBinding: InitialBinding(),
       theme: ThemeData(
           useMaterial3: true,
           brightness: Brightness.dark,
           textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context)
               .textTheme
               .apply(bodyColor: Colors.white, displayColor: Colors.grey))),
-      home: const SignInPage(),
+
+      initialBinding: InitialBinding(),
+      initialRoute: '/',
+      getPages: [
+        GetPage(name: '/', page: () => const SplashScreen()),
+        GetPage(name: '/register', page: () => const SignInPage()),
+        GetPage(name: '/home', page: () => MainControlPanelPage()),
+        GetPage(name: '/login', page: () => const LoginPage()),
+      ],
     );
   }
 }
