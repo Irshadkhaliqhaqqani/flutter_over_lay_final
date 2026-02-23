@@ -1,7 +1,7 @@
+import 'package:app_links/app_links.dart';
 import 'package:figma_overlay_clean/core/binding/initial_binding.dart';
 import 'package:figma_overlay_clean/presentation/authentication/login/screen/login_page.dart';
 import 'package:figma_overlay_clean/presentation/authentication/sign_in/screen/sign_in_page.dart';
-import 'package:figma_overlay_clean/presentation/home_page/screen/home_page.dart';
 import 'package:figma_overlay_clean/presentation/main_page/screen/main_control_panel_page.dart';
 import 'package:figma_overlay_clean/presentation/splash_screen/screen/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +20,21 @@ void main(List<String> args) async {
   await Supabase.initialize(
       url: 'https://mieeoyivlkvjcxjiswly.supabase.co',
       anonKey: 'sb_publishable_siSxEBtxgD8Y8i1Go1_aXg_JvS9gLD2');
+
+// SINGLE listener for Auth state
+  Supabase.instance.client.auth.onAuthStateChange.listen((data) {
+    if (data.session != null) {
+      Get.offAllNamed('/home');
+    }
+  });
+
+  // 2. Initialize AppLinks to "catch" the browser redirect
+  final appLinks = AppLinks();
+  appLinks.uriLinkStream.listen((uri) {
+    debugPrint('Redirect received: $uri');
+    // Supabase internal logic automatically handles the URI
+    // fragment once the app is in the foreground.
+  });
 
   // 1. Initialize Window Manager
   await windowManager.ensureInitialized();
@@ -93,6 +108,7 @@ class MainApp extends StatelessWidget {
               .apply(bodyColor: Colors.white, displayColor: Colors.grey))),
 
       initialBinding: InitialBinding(),
+      defaultTransition: Transition.fade,
       initialRoute: '/',
       getPages: [
         GetPage(name: '/', page: () => const SplashScreen()),

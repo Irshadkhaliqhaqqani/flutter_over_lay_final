@@ -41,6 +41,10 @@ dependencies:
 
   #Supabase flutter pacage 
   supabase_flutter: ^2.12.0
+
+  # social authentication pacakage 
+  app_links: ^6.0.0  # Handles the deep link (io.supabase.flutter)
+  url_launcher: ^6.2.0  # Opens the browser for GitHub login
   
   
 dev_dependencies:

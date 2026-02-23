@@ -30,4 +30,19 @@ class AuthRepoImpl implements AuthRepo {
   Stream<User?> onAuthStateChange() {
     return _client.auth.onAuthStateChange.map((data) => data.session?.user);
   }
+
+  @override
+  Future<void> signInWithGitHub() async {
+    await _client.auth.signInWithOAuth(OAuthProvider.github,
+        redirectTo: 'io.supabase.flutter://callback',
+        authScreenLaunchMode: LaunchMode.externalApplication);
+  }
+
+  @override
+  Future<void> signInWithFigma() async {
+    await _client.auth.signInWithOAuth(OAuthProvider.figma,
+        redirectTo: 'io.supabase.flutter://callback',
+        scopes: 'file_read files:read',
+        authScreenLaunchMode: LaunchMode.externalApplication);
+  }
 }

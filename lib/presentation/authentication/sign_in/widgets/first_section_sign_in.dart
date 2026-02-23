@@ -104,7 +104,9 @@ class FirstSectionSignIn extends StatelessWidget {
             height: 10,
           ),
           GestureDetector(
-            onTap: () => Get.toNamed('login'),
+            onTap: () => Get.toNamed(
+              'login',
+            ),
             child: RichText(
                 text: const TextSpan(children: [
               TextSpan(text: 'Already have an account:'),
@@ -124,25 +126,31 @@ class FirstSectionSignIn extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              GlassCard(
-                  opacity: 0.09,
-                  borderRadius: 50,
-                  child: Image.asset(
-                    'assets/icons/figma.png',
-                    height: 25,
-                    width: 25,
-                  )),
+              GestureDetector(
+                onTap: () => controller.loginWithFigma(),
+                child: GlassCard(
+                    opacity: 0.09,
+                    borderRadius: 50,
+                    child: Image.asset(
+                      'assets/icons/figma.png',
+                      height: 25,
+                      width: 25,
+                    )),
+              ),
               const SizedBox(
                 width: 8,
               ),
-              GlassCard(
-                  opacity: 0.09,
-                  borderRadius: 50,
-                  child: Image.asset(
-                    'assets/icons/github.png',
-                    height: 25,
-                    width: 25,
-                  )),
+              GestureDetector(
+                onTap: () => controller.loginWithGitHub(),
+                child: GlassCard(
+                    opacity: 0.09,
+                    borderRadius: 50,
+                    child: Image.asset(
+                      'assets/icons/github.png',
+                      height: 25,
+                      width: 25,
+                    )),
+              ),
               const SizedBox(
                 width: 8,
               ),

@@ -110,4 +110,44 @@ class AuthController extends GetxController {
     passwordController.clear();
     confirmPasswordController.clear();
   }
+
+  // Social authentication
+
+  // Git hub authentication method
+
+  Future<void> loginWithGitHub() async {
+    try {
+      isLoading.value = true;
+      await _repo.signInWithGitHub();
+    } catch (e) {
+      Get.snackbar(
+        "GitHub Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // Git hub authentication method
+
+  Future<void> loginWithFigma() async {
+    try {
+      isLoading.value = true;
+      await _repo.signInWithFigma();
+    } catch (e) {
+      Get.snackbar(
+        "Figma Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }
