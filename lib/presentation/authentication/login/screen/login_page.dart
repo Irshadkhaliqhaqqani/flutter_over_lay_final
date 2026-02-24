@@ -1,4 +1,3 @@
-import 'package:figma_overlay_clean/presentation/authentication/controller/auth_controller.dart';
 import 'package:figma_overlay_clean/presentation/authentication/login/widgets/first_section_login.dart';
 import 'package:figma_overlay_clean/presentation/authentication/sign_in/widgets/second_section.dart';
 import 'package:figma_overlay_clean/presentation/main_page/widgets/main_screen_drag_bar.dart';

@@ -22,7 +22,14 @@ class AuthController extends GetxController {
     super.onInit();
     currentUser.value = _repo.currentUser;
     _repo.onAuthStateChange().listen((user) {
+      debugPrint('AuthController: Auth state changed - User: ${user?.email ?? 'null'}');
       currentUser.value = user;
+      // Navigate to home when user auth state changes (OAuth completion)
+      // Only navigate if we're not already on home page
+      if (user != null && Get.currentRoute != '/home') {
+        debugPrint('AuthController: Navigating to home page');
+        Get.offAllNamed('/home');
+      }
     });
     _startAppLogic();
   }
@@ -117,9 +124,12 @@ class AuthController extends GetxController {
 
   Future<void> loginWithGitHub() async {
     try {
+      debugPrint('AuthController: Starting GitHub login');
       isLoading.value = true;
       await _repo.signInWithGitHub();
+      debugPrint('AuthController: GitHub login initiated successfully');
     } catch (e) {
+      debugPrint('AuthController: GitHub login error: $e');
       Get.snackbar(
         "GitHub Error",
         e.toString(),
@@ -136,9 +146,12 @@ class AuthController extends GetxController {
 
   Future<void> loginWithFigma() async {
     try {
+      debugPrint('AuthController: Starting Figma login');
       isLoading.value = true;
       await _repo.signInWithFigma();
+      debugPrint('AuthController: Figma login initiated successfully');
     } catch (e) {
+      debugPrint('AuthController: Figma login error: $e');
       Get.snackbar(
         "Figma Error",
         e.toString(),

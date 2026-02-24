@@ -11,7 +11,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 import 'core/constants/app_constants.dart';
 import 'presentation/overlay_page/screen/overlay_page.dart';
-import 'core/utils/dependency_injection.dart';
 
 void main(List<String> args) async {
   // Ensure the Flutter framework is ready before native calls
@@ -21,26 +20,25 @@ void main(List<String> args) async {
       url: 'https://mieeoyivlkvjcxjiswly.supabase.co',
       anonKey: 'sb_publishable_siSxEBtxgD8Y8i1Go1_aXg_JvS9gLD2');
 
-// SINGLE listener for Auth state
-  Supabase.instance.client.auth.onAuthStateChange.listen((data) {
-    if (data.session != null) {
-      Get.offAllNamed('/home');
-    }
-  });
-
   // 2. Initialize AppLinks to "catch" the browser redirect
   final appLinks = AppLinks();
   appLinks.uriLinkStream.listen((uri) {
-    debugPrint('Redirect received: $uri');
+    debugPrint('=== AppLinks Redirect Received ===');
+    debugPrint('URI: $uri');
+    debugPrint('Scheme: ${uri.scheme}');
+    debugPrint('Host: ${uri.host}');
+    debugPrint('Path: ${uri.path}');
+    debugPrint('Query: ${uri.query}');
+    debugPrint('================================');
     // Supabase internal logic automatically handles the URI
     // fragment once the app is in the foreground.
   });
+  
+  // Test AppLinks manually (remove this after testing)
+  debugPrint('AppLinks initialized and listening for deep links');
 
   // 1. Initialize Window Manager
   await windowManager.ensureInitialized();
-
-  // Initialize your GetX dependencies
-  DependencyInjection.init();
 
   // Check for the 'overlay' command-line argument
   final isOverlayWindow = args.isNotEmpty && args.first == 'overlay';
