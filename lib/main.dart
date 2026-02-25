@@ -1,4 +1,3 @@
-import 'package:app_links/app_links.dart';
 import 'package:figma_overlay_clean/core/binding/initial_binding.dart';
 import 'package:figma_overlay_clean/presentation/authentication/login/screen/login_page.dart';
 import 'package:figma_overlay_clean/presentation/authentication/sign_in/screen/sign_in_page.dart';
@@ -13,38 +12,18 @@ import 'core/constants/app_constants.dart';
 import 'presentation/overlay_page/screen/overlay_page.dart';
 
 void main(List<String> args) async {
-  // Ensure the Flutter framework is ready before native calls
   WidgetsFlutterBinding.ensureInitialized();
 
   await Supabase.initialize(
-      url: 'https://mieeoyivlkvjcxjiswly.supabase.co',
-      anonKey: 'sb_publishable_siSxEBtxgD8Y8i1Go1_aXg_JvS9gLD2');
+    url: 'https://mieeoyivlkvjcxjiswly.supabase.co',
+    anonKey: 'sb_publishable_siSxEBtxgD8Y8i1Go1_aXg_JvS9gLD2',
+  );
 
-  // 2. Initialize AppLinks to "catch" the browser redirect
-  final appLinks = AppLinks();
-  appLinks.uriLinkStream.listen((uri) {
-    debugPrint('=== AppLinks Redirect Received ===');
-    debugPrint('URI: $uri');
-    debugPrint('Scheme: ${uri.scheme}');
-    debugPrint('Host: ${uri.host}');
-    debugPrint('Path: ${uri.path}');
-    debugPrint('Query: ${uri.query}');
-    debugPrint('================================');
-    // Supabase internal logic automatically handles the URI
-    // fragment once the app is in the foreground.
-  });
-  
-  // Test AppLinks manually (remove this after testing)
-  debugPrint('AppLinks initialized and listening for deep links');
-
-  // 1. Initialize Window Manager
   await windowManager.ensureInitialized();
 
-  // Check for the 'overlay' command-line argument
   final isOverlayWindow = args.isNotEmpty && args.first == 'overlay';
 
   if (isOverlayWindow) {
-    // === OVERLAY WINDOW CONFIGURATION ===
     const windowOptions = WindowOptions(
       size: AppConstants.overlayWindowSize,
       backgroundColor: Colors.transparent,
@@ -61,7 +40,6 @@ void main(List<String> args) async {
 
     runApp(const OverlayApp());
   } else {
-    // === MAIN WINDOW CONFIGURATION ===
     const windowOptions = WindowOptions(
       size: AppConstants.mainWindowSize,
       center: true,
@@ -80,16 +58,13 @@ void main(List<String> args) async {
   }
 }
 
-// ============================================
-// MAIN APP - Glassmorphism Container
-// ============================================
+// Main App
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      // Ensure the very base layer of the app is transparent
       builder: (context, child) {
         return Container(
           color: Colors.transparent,
@@ -99,12 +74,15 @@ class MainApp extends StatelessWidget {
       title: AppConstants.appTitle,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          useMaterial3: true,
-          brightness: Brightness.dark,
-          textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context)
-              .textTheme
-              .apply(bodyColor: Colors.white, displayColor: Colors.grey))),
-
+        useMaterial3: true,
+        brightness: Brightness.dark,
+        textTheme: GoogleFonts.poppinsTextTheme(
+          Theme.of(context).textTheme.apply(
+                bodyColor: Colors.white,
+                displayColor: Colors.grey,
+              ),
+        ),
+      ),
       initialBinding: InitialBinding(),
       defaultTransition: Transition.fade,
       initialRoute: '/',
@@ -118,18 +96,17 @@ class MainApp extends StatelessWidget {
   }
 }
 
-// ============================================
-// OVERLAY APP
-// ============================================
-
+// Overlay App
 class OverlayApp extends StatelessWidget {
   const OverlayApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      builder: (context, child) =>
-          Container(color: Colors.transparent, child: child),
+      builder: (context, child) => Container(
+        color: Colors.transparent,
+        child: child,
+      ),
       title: 'Overlay',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

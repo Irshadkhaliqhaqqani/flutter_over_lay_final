@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:figma_overlay_clean/domain/repositories/auth_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,107 +11,111 @@ class AuthController extends GetxController {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
-  var loadingProgress = 0.0.obs;
+  final loadingProgress = 0.0.obs;
 
-  // obsevables
-
+  HttpServer? _oauthServer;
   var isLoading = false.obs;
   Rx<User?> currentUser = Rx<User?>(null);
+
+  // ================= INIT =================
 
   @override
   void onInit() {
     super.onInit();
+
+    debugPrint('🔔 AUTH CONTROLLER INITIALIZED');
+
     currentUser.value = _repo.currentUser;
+
     _repo.onAuthStateChange().listen((user) {
-      debugPrint('AuthController: Auth state changed - User: ${user?.email ?? 'null'}');
+      debugPrint('🔄 AUTH STATE CHANGED → ${user?.email}');
+
       currentUser.value = user;
-      // Navigate to home when user auth state changes (OAuth completion)
-      // Only navigate if we're not already on home page
+
       if (user != null && Get.currentRoute != '/home') {
-        debugPrint('AuthController: Navigating to home page');
         Get.offAllNamed('/home');
       }
     });
-    _startAppLogic();
   }
 
-  // Splash
+  // ================= OAUTH SERVER =================
 
-  Future<void> _startAppLogic() async {
-    // 1. Fill the progress bar over 3 seconds
-    const totalSteps = 30; // Update every 100ms for smoothness
-    for (int i = 1; i <= totalSteps; i++) {
-      await Future.delayed(const Duration(milliseconds: 100));
-      loadingProgress.value = i / totalSteps;
-    }
+  Future<void> _startOAuthServer() async {
+    if (_oauthServer != null) return; // prevent multiple binds
 
-    // 2. Check the initial session from your repository
-    final user = _repo.currentUser;
+    _oauthServer = await HttpServer.bind(
+      InternetAddress.loopbackIPv4,
+      3000,
+    );
 
-    if (user != null) {
-      Get.offAllNamed('/home');
-    } else {
-      Get.offAllNamed('/register');
-    }
+    debugPrint("✅ OAuth server running at http://localhost:3000");
+
+    _oauthServer!.listen((HttpRequest request) async {
+      final uri = request.uri;
+
+      if (uri.path == '/callback') {
+        debugPrint("🔔 OAuth callback: $uri");
+
+        try {
+          await Supabase.instance.client.auth.getSessionFromUrl(uri);
+
+          request.response
+            ..statusCode = 200
+            ..write("Login successful! You can close this tab.")
+            ..close();
+
+          await _oauthServer?.close();
+          _oauthServer = null;
+
+          debugPrint("✅ OAuth completed & server closed");
+        } catch (e) {
+          debugPrint("❌ OAuth processing error: $e");
+        }
+      }
+    });
   }
 
-  // Login Method
+  // ================= EMAIL LOGIN =================
+
   Future<void> login() async {
     try {
       isLoading.value = true;
       await _repo.signIn(emailController.text, passwordController.text);
-
       _clearTextFields();
-
-      // Success
-      Get.toNamed('/home');
-      Get.snackbar('Success', 'Well back');
+      Get.snackbar('Success', 'Welcome back!');
     } on AuthException catch (e) {
-      if (e.message.contains("Email not confirmed")) {
-        Get.snackbar(
-          'Action Required',
-          'Please check your email and confirm your account before logging in.',
-          backgroundColor: Colors.orangeAccent,
-          colorText: Colors.white,
-        );
-      } else {
-        Get.snackbar('Login Failed', e.message);
-      }
+      Get.snackbar('Login Failed', e.message);
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Register in
+  // ================= REGISTER =================
 
   Future<void> register() async {
     try {
       if (passwordController.text != confirmPasswordController.text) {
-        Get.snackbar('Error', 'Password do not match');
+        Get.snackbar('Error', 'Passwords do not match');
+        return;
       }
+
       isLoading.value = true;
-
       await _repo.signUp(emailController.text, passwordController.text);
-
       _clearTextFields();
-      // success
-      Get.toNamed('/home');
-      Get.snackbar('Sucess', 'Account Created');
+      Get.snackbar('Success', 'Check your email to confirm.');
     } on AuthException catch (e) {
-      Get.snackbar('Failed', 'Account are not  Created');
+      Get.snackbar('Failed', e.message);
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Logout
+  // ================= LOGOUT =================
 
   Future<void> logout() async {
     await _repo.signOut();
-    Get.toNamed('/register');
+    Get.offAllNamed('/register');
   }
-
-  // Helper for  clear textediting controllers
 
   void _clearTextFields() {
     emailController.clear();
@@ -118,49 +123,33 @@ class AuthController extends GetxController {
     confirmPasswordController.clear();
   }
 
-  // Social authentication
+  // ================= OAUTH LOGIN =================
 
-  // Git hub authentication method
-
-  Future<void> loginWithGitHub() async {
+  Future<void> _loginWithOAuth(OAuthProvider provider) async {
     try {
-      debugPrint('AuthController: Starting GitHub login');
       isLoading.value = true;
-      await _repo.signInWithGitHub();
-      debugPrint('AuthController: GitHub login initiated successfully');
-    } catch (e) {
-      debugPrint('AuthController: GitHub login error: $e');
-      Get.snackbar(
-        "GitHub Error",
-        e.toString(),
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.redAccent,
-        colorText: Colors.white,
+
+      await _startOAuthServer();
+
+      await Supabase.instance.client.auth.signInWithOAuth(
+        provider,
+        redirectTo: 'http://localhost:3000/callback',
+        authScreenLaunchMode: LaunchMode.externalApplication,
       );
+
+      debugPrint("🚀 OAuth flow started for $provider");
+    } catch (e) {
+      Get.snackbar("OAuth Error", e.toString());
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Git hub authentication method
+  Future<void> loginWithGitHub() async {
+    await _loginWithOAuth(OAuthProvider.github);
+  }
 
   Future<void> loginWithFigma() async {
-    try {
-      debugPrint('AuthController: Starting Figma login');
-      isLoading.value = true;
-      await _repo.signInWithFigma();
-      debugPrint('AuthController: Figma login initiated successfully');
-    } catch (e) {
-      debugPrint('AuthController: Figma login error: $e');
-      Get.snackbar(
-        "Figma Error",
-        e.toString(),
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.redAccent,
-        colorText: Colors.white,
-      );
-    } finally {
-      isLoading.value = false;
-    }
+    await _loginWithOAuth(OAuthProvider.figma);
   }
 }
