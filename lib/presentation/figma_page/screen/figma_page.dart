@@ -10,18 +10,18 @@ class FigmaPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       children: [
-        FigmaAppBar(),
+        const FigmaAppBar(),
         Expanded(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               FigmaSec1(),
-              SizedBox(
+              const SizedBox(
                 width: 10,
               ),
-              Expanded(
+              const Expanded(
                 child: Column(
                   children: [
                     FigmaSec2(),

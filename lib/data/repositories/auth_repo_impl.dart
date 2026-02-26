@@ -1,7 +1,4 @@
 import 'package:figma_overlay_clean/domain/repositories/auth_repo.dart';
-
-import 'package:flutter/foundation.dart';
-
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthRepoImpl implements AuthRepo {
@@ -36,10 +33,8 @@ class AuthRepoImpl implements AuthRepo {
 
   @override
   Future<void> signInWithGitHub() async {
-    debugPrint(
-        'AuthRepo: Starting GitHub OAuth with redirect: https://mieeoyivlkvjcxjiswly.supabase.co/auth/v1/callback');
     await _client.auth.signInWithOAuth(OAuthProvider.github,
-        redirectTo: 'https://mieeoyivlkvjcxjiswly.supabase.co/auth/v1/callback',
+        redirectTo: 'http://localhost:3000/callback',
         authScreenLaunchMode: LaunchMode.externalApplication);
   }
 

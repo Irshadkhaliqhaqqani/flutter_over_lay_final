@@ -1,28 +1,31 @@
-import 'package:figma_overlay_clean/domain/entities/figma_file_entit.dart';
+import 'package:figma_overlay_clean/core/utils/figma_url_parser.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../domain/repositories/figma_repository.dart';
 
 class FigmaController extends GetxController {
-  final FigmaRepository repository;
-  FigmaController({required this.repository});
+  final FigmaRepository _repo;
+  FigmaController(this._repo);
 
+  final urlController = TextEditingController();
+  var designUrl = "".obs;
   var isLoading = false.obs;
-  var figmaFile = Rxn<FigmaFileEntity>();
 
-  Future<void> fetchDesign(String url) async {
-    // Basic regex to extract file key from Figma URL
-    final RegExp regExp = RegExp(r"file/([^/?]+)");
-    final match = regExp.firstMatch(url);
+  Future<void> fetchDesign() async {
+    final params = FigmaUrlParser.parse(urlController.text);
+    if (params == null) return;
 
-    if (match != null) {
-      String fileKey = match.group(1)!;
-      try {
-        isLoading.value = true;
-        final result = await repository.getFigmaFile(fileKey);
-        figmaFile.value = result;
-      } finally {
-        isLoading.value = false;
-      }
+    try {
+      isLoading.value = true;
+      // Step 1: Render the image link
+      final imageUrl =
+          await _repo.getFigmaImageUrl(params['fileKey']!, params['nodeId']!);
+      designUrl.value = imageUrl;
+      Get.snackbar("Success", "Design Ready!");
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    } finally {
+      isLoading.value = false;
     }
   }
 }

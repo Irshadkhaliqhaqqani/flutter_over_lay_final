@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:figma_overlay_clean/domain/repositories/auth_repo.dart';
 import 'package:flutter/material.dart';
@@ -8,14 +9,18 @@ class AuthController extends GetxController {
   final AuthRepo _repo;
   AuthController(this._repo);
 
+  // ================= STATE =================
+
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+
+  final isLoading = false.obs;
+  final currentUser = Rx<User?>(null);
   final loadingProgress = 0.0.obs;
 
   HttpServer? _oauthServer;
-  var isLoading = false.obs;
-  Rx<User?> currentUser = Rx<User?>(null);
+  StreamSubscription? _authSubscription;
 
   // ================= INIT =================
 
@@ -23,39 +28,118 @@ class AuthController extends GetxController {
   void onInit() {
     super.onInit();
 
-    debugPrint('🔔 AUTH CONTROLLER INITIALIZED');
+    debugPrint("🔔 AuthController initialized");
 
-    currentUser.value = _repo.currentUser;
+    // Restore existing session (important for desktop)
+    currentUser.value = Supabase.instance.client.auth.currentUser;
 
-    _repo.onAuthStateChange().listen((user) {
-      debugPrint('🔄 AUTH STATE CHANGED → ${user?.email}');
+    // Listen to auth state changes
+    _authSubscription =
+        Supabase.instance.client.auth.onAuthStateChange.listen((data) {
+      final session = data.session;
+      currentUser.value = session?.user;
 
-      currentUser.value = user;
-
-      if (user != null && Get.currentRoute != '/home') {
-        Get.offAllNamed('/home');
-      }
+      debugPrint(
+          "🔄 Auth state changed → ${session?.user?.email ?? "No user"}");
     });
   }
 
-  // ================= OAUTH SERVER =================
+  @override
+  void onClose() {
+    _authSubscription?.cancel();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.onClose();
+  }
+
+  // ================= EMAIL LOGIN =================
+
+  Future<void> login() async {
+    try {
+      isLoading.value = true;
+
+      await Supabase.instance.client.auth.signInWithPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+
+      _clearTextFields();
+      Get.snackbar("Success", "Welcome back!");
+    } on AuthException catch (e) {
+      Get.snackbar("Login Failed", e.message);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // ================= REGISTER =================
+
+  Future<void> register() async {
+    try {
+      if (passwordController.text != confirmPasswordController.text) {
+        Get.snackbar("Error", "Passwords do not match");
+        return;
+      }
+
+      isLoading.value = true;
+
+      await Supabase.instance.client.auth.signUp(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+
+      _clearTextFields();
+      Get.snackbar("Success", "Check your email to confirm.");
+    } on AuthException catch (e) {
+      Get.snackbar("Register Failed", e.message);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // ================= LOGOUT =================
+
+  Future<void> logout() async {
+    try {
+      isLoading.value = true;
+
+      if (_oauthServer != null) {
+        await _oauthServer!.close(force: true);
+        _oauthServer = null;
+      }
+
+      await Supabase.instance.client.auth.signOut();
+
+      currentUser.value = null;
+
+      debugPrint("✅ Logged out successfully");
+    } catch (e) {
+      debugPrint("❌ Logout error: $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void _clearTextFields() {
+    emailController.clear();
+    passwordController.clear();
+    confirmPasswordController.clear();
+  }
+
+  // ================= OAUTH SERVER (DESKTOP) =================
 
   Future<void> _startOAuthServer() async {
-    if (_oauthServer != null) return; // prevent multiple binds
+    if (_oauthServer != null) return;
 
-    _oauthServer = await HttpServer.bind(
-      InternetAddress.loopbackIPv4,
-      3000,
-    );
+    _oauthServer = await HttpServer.bind(InternetAddress.loopbackIPv4, 3000);
 
-    debugPrint("✅ OAuth server running at http://localhost:3000");
+    debugPrint("✅ OAuth server running on http://localhost:3000");
 
     _oauthServer!.listen((HttpRequest request) async {
       final uri = request.uri;
 
       if (uri.path == '/callback') {
-        debugPrint("🔔 OAuth callback: $uri");
-
         try {
           await Supabase.instance.client.auth.getSessionFromUrl(uri);
 
@@ -67,60 +151,12 @@ class AuthController extends GetxController {
           await _oauthServer?.close();
           _oauthServer = null;
 
-          debugPrint("✅ OAuth completed & server closed");
+          debugPrint("✅ OAuth completed");
         } catch (e) {
-          debugPrint("❌ OAuth processing error: $e");
+          debugPrint("❌ OAuth error: $e");
         }
       }
     });
-  }
-
-  // ================= EMAIL LOGIN =================
-
-  Future<void> login() async {
-    try {
-      isLoading.value = true;
-      await _repo.signIn(emailController.text, passwordController.text);
-      _clearTextFields();
-      Get.snackbar('Success', 'Welcome back!');
-    } on AuthException catch (e) {
-      Get.snackbar('Login Failed', e.message);
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  // ================= REGISTER =================
-
-  Future<void> register() async {
-    try {
-      if (passwordController.text != confirmPasswordController.text) {
-        Get.snackbar('Error', 'Passwords do not match');
-        return;
-      }
-
-      isLoading.value = true;
-      await _repo.signUp(emailController.text, passwordController.text);
-      _clearTextFields();
-      Get.snackbar('Success', 'Check your email to confirm.');
-    } on AuthException catch (e) {
-      Get.snackbar('Failed', e.message);
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  // ================= LOGOUT =================
-
-  Future<void> logout() async {
-    await _repo.signOut();
-    Get.offAllNamed('/register');
-  }
-
-  void _clearTextFields() {
-    emailController.clear();
-    passwordController.clear();
-    confirmPasswordController.clear();
   }
 
   // ================= OAUTH LOGIN =================
@@ -137,7 +173,7 @@ class AuthController extends GetxController {
         authScreenLaunchMode: LaunchMode.externalApplication,
       );
 
-      debugPrint("🚀 OAuth flow started for $provider");
+      debugPrint("🚀 OAuth started for $provider");
     } catch (e) {
       Get.snackbar("OAuth Error", e.toString());
     } finally {
@@ -151,5 +187,19 @@ class AuthController extends GetxController {
 
   Future<void> loginWithFigma() async {
     await _loginWithOAuth(OAuthProvider.figma);
+  }
+
+  // ================= HELPERS =================
+
+  String get displayName {
+    final user = currentUser.value;
+    return user?.userMetadata?['full_name'] ??
+        user?.userMetadata?['name'] ??
+        user?.email ??
+        "User";
+  }
+
+  String get provider {
+    return currentUser.value?.appMetadata?['provider'] ?? "email";
   }
 }

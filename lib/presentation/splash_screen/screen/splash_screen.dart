@@ -1,4 +1,5 @@
 import 'package:figma_overlay_clean/presentation/authentication/controller/auth_controller.dart';
+import 'package:figma_overlay_clean/presentation/splash_screen/controller/splash_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -12,6 +13,7 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<AuthController>();
+    Get.put(SplashController());
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: ClipRRect(

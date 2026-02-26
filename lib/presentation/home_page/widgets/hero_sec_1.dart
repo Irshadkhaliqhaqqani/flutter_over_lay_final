@@ -40,9 +40,9 @@ class HeroSec1 extends StatelessWidget {
                 buttonText: 'Get Started',
                 buttonColor: AppColors.primaryColor,
                 buttonHieght: 38,
-              )
+              ),
             ],
-          )
+          ),
         ],
       ),
     );

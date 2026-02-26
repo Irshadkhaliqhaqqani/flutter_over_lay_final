@@ -1,4 +1,5 @@
 import 'package:figma_overlay_clean/core/binding/initial_binding.dart';
+import 'package:figma_overlay_clean/presentation/authentication/controller/auth_gate.dart';
 import 'package:figma_overlay_clean/presentation/authentication/login/screen/login_page.dart';
 import 'package:figma_overlay_clean/presentation/authentication/sign_in/screen/sign_in_page.dart';
 import 'package:figma_overlay_clean/presentation/main_page/screen/main_control_panel_page.dart';
@@ -88,6 +89,7 @@ class MainApp extends StatelessWidget {
       initialRoute: '/',
       getPages: [
         GetPage(name: '/', page: () => const SplashScreen()),
+        GetPage(name: '/authGate', page: () => const AuthGate()),
         GetPage(name: '/register', page: () => const SignInPage()),
         GetPage(name: '/home', page: () => MainControlPanelPage()),
         GetPage(name: '/login', page: () => const LoginPage()),
@@ -113,7 +115,7 @@ class OverlayApp extends StatelessWidget {
         useMaterial3: true,
         brightness: Brightness.dark,
       ),
-      home: OverlayPage(),
+      home: const OverlayPage(),
     );
   }
 }

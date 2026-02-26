@@ -1,22 +1,26 @@
-import 'package:figma_overlay_clean/core/constants/app_colors.dart';
 import 'package:figma_overlay_clean/core/constants/glass_card.dart';
 import 'package:figma_overlay_clean/core/constants/review_section.dart';
+import 'package:figma_overlay_clean/presentation/authentication/controller/auth_controller.dart';
 import 'package:figma_overlay_clean/presentation/home_page/widgets/hero_sec_1.dart';
 import 'package:figma_overlay_clean/presentation/home_page/widgets/hero_sec_2.dart';
 import 'package:figma_overlay_clean/presentation/home_page/widgets/hero_sec_3.dart';
 import 'package:figma_overlay_clean/presentation/home_page/widgets/hero_sec_4.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    final controller = Get.find<AuthController>();
+
+    return Column(
       children: [
         // First Section
-        Expanded(
+        const Expanded(
           child: Row(
             children: [
               Expanded(flex: 4, child: HeroSec1()),
@@ -28,10 +32,10 @@ class HomePage extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
 
         // Second Section
-        Expanded(
+        const Expanded(
           child: Row(
             children: [
               Expanded(
@@ -46,11 +50,40 @@ class HomePage extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
 
         // Updated Review Row
 
-        ReviewSection()
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const ReviewSection(),
+            Obx(() {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Welcome ${controller.displayName}",
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                      Text("Account: ${controller.provider.toUpperCase()}"),
+                    ],
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  IconButton(
+                    onPressed: controller.logout,
+                    icon: const Icon(Icons.power_off),
+                  ),
+                ],
+              );
+            })
+          ],
+        )
       ],
     );
   }

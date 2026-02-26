@@ -14,6 +14,7 @@ import 'package:figma_overlay_clean/presentation/figma_page/controller/figma_pag
 import 'package:figma_overlay_clean/presentation/home_page/controller/side_menu_bar_controller.dart';
 import 'package:figma_overlay_clean/presentation/main_page/controller/main_controller.dart';
 import 'package:figma_overlay_clean/presentation/overlay_page/controller/overlay_controller.dart';
+import 'package:figma_overlay_clean/presentation/splash_screen/screen/splash_screen.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/bindings_interface.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
@@ -26,7 +27,7 @@ class InitialBinding extends Bindings {
     Get.lazyPut<WindowRepository>(() => WindowRepositoryImpl());
     Get.lazyPut<FigmaRepository>(() => FigmaRepositoryImpl(), fenix: true);
     Get.lazyPut<AuthRepo>(() => AuthRepoImpl());
-    
+
     // Use Cases
     Get.lazyPut(() => PickImageUseCase(Get.find()), fenix: true);
     Get.lazyPut(() => OpenOverlayWindowUseCase(Get.find()));
@@ -35,10 +36,12 @@ class InitialBinding extends Bindings {
     Get.put(SideMenuBarController(), permanent: true);
     Get.put(AuthController(Get.find<AuthRepo>()), permanent: true);
     Get.put(MainController(Get.find()), permanent: true);
+    Get.put(const SplashScreen());
 
     // 3. Feature Controllers (Loaded when needed)
     // fenix: true allows them to be recreated if the user navigates back to the page
-    Get.lazyPut(() => FigmaController(repository: Get.find()), fenix: true);
+    Get.lazyPut(() => FigmaController(Get.find<FigmaRepository>()),
+        fenix: true);
     Get.lazyPut(() => FigmaPageController(), fenix: true);
     Get.lazyPut(() => OverlayController(Get.find()), fenix: true);
   }

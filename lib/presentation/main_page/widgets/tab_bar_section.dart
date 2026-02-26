@@ -59,8 +59,7 @@ class TabBarSection extends StatelessWidget {
             _buildSideItem(menuBarController, 4,
                 "assets/svgs/list-solid-full.svg", 'Guide'),
             const Spacer(),
-            GestureDetector(
-                onTap: () => controller.logout(), child: Icon(Icons.power_off)),
+            GestureDetector(onTap: () {}, child: const Icon(Icons.settings)),
             const SizedBox(
               height: 20,
             ),

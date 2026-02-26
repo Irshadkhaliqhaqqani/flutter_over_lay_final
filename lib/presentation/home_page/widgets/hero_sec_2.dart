@@ -1,11 +1,13 @@
 import 'package:figma_overlay_clean/core/constants/app_colors.dart';
 import 'package:figma_overlay_clean/core/constants/button_2.dart';
+import 'package:figma_overlay_clean/presentation/figma_page/controller/figma_controller.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class HeroSec2 extends StatelessWidget {
+class HeroSec2 extends GetView<FigmaController> {
   const HeroSec2({super.key});
 
   @override
@@ -23,6 +25,7 @@ class HeroSec2 extends StatelessWidget {
             height: 10,
           ),
           TextFormField(
+            controller: controller.urlController,
             decoration: InputDecoration(
                 filled: true,
                 hintText: 'Paste Fimga URL . (http.design/home)',
@@ -52,11 +55,18 @@ class HeroSec2 extends StatelessWidget {
               ),
               const Text("Figma API Connected"),
               const Spacer(),
-              const Button2(
-                buttonText: 'Fetch Desgin',
-                buttonColor: AppColors.primaryColor,
-                buttonHieght: 38,
-              ),
+              Obx(
+                () => Button2(
+                  onTap: controller.isLoading.value
+                      ? null
+                      : () => controller.fetchDesign(),
+                  buttonText: controller.isLoading.value
+                      ? 'Fetching...'
+                      : 'Fetch Design',
+                  buttonColor: AppColors.primaryColor,
+                  buttonHieght: 38,
+                ),
+              )
             ],
           ),
           const SizedBox(
