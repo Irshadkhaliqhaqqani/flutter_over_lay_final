@@ -31,9 +31,11 @@ class AuthController extends GetxController {
     debugPrint("🔔 AuthController initialized");
 
     // Restore existing session (important for desktop)
+
     currentUser.value = Supabase.instance.client.auth.currentUser;
 
     // Listen to auth state changes
+
     _authSubscription =
         Supabase.instance.client.auth.onAuthStateChange.listen((data) {
       final session = data.session;

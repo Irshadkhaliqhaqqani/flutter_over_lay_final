@@ -12,8 +12,13 @@ class FigmaController extends GetxController {
   var isLoading = false.obs;
 
   Future<void> fetchDesign() async {
+    if (isLoading.value) return;
+
     final params = FigmaUrlParser.parse(urlController.text);
-    if (params == null) return;
+    if (params == null || params['nodeId'] == null) {
+      Get.snackbar("Error", "Please select a specific frame in Figma first.");
+      return;
+    }
 
     try {
       isLoading.value = true;

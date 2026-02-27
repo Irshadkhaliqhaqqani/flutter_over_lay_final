@@ -18,6 +18,9 @@ void main(List<String> args) async {
   await Supabase.initialize(
     url: 'https://mieeoyivlkvjcxjiswly.supabase.co',
     anonKey: 'sb_publishable_siSxEBtxgD8Y8i1Go1_aXg_JvS9gLD2',
+    authOptions: const FlutterAuthClientOptions(
+      authFlowType: AuthFlowType.pkce,
+    ),
   );
 
   await windowManager.ensureInitialized();
